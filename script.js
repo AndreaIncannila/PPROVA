@@ -1,10 +1,8 @@
+let deferredPrompt;
+
 // Gestione stato online/offline
-window.addEventListener('online', () => {
-  showStatus('Sei online ✔️', 'green');
-});
-window.addEventListener('offline', () => {
-  showStatus('Sei offline ❌', 'red');
-});
+window.addEventListener('online', () => showStatus('Sei online ✔️', 'green'));
+window.addEventListener('offline', () => showStatus('Sei offline ❌', 'red'));
 
 function showStatus(message, color) {
   let status = document.getElementById('status');
@@ -25,31 +23,58 @@ function showStatus(message, color) {
   setTimeout(() => { status.style.display = 'none'; }, 4000);
 }
 
-// Salvataggio e recupero dati
 document.addEventListener('DOMContentLoaded', () => {
+  // Ripristina valori salvati
   document.querySelectorAll('input').forEach(input => {
     const saved = localStorage.getItem(input.id);
     if (saved) input.value = saved;
   });
 
-  // Pulsante tema
-  const btn = document.createElement('button');
-  btn.textContent = '🌓 Cambia Tema';
-  btn.style.position = 'fixed';
-  btn.style.bottom = '10px';
-  btn.style.right = '10px';
-  btn.style.padding = '10px';
-  btn.style.borderRadius = '8px';
-  btn.onclick = () => {
-    document.body.classList.toggle('dark-mode');
-    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
-  };
-  document.body.appendChild(btn);
-
   // Tema salvato
   if (localStorage.getItem('theme') === 'dark') {
     document.body.classList.add('dark-mode');
   }
+
+  // Bottone tema
+  const btnTheme = document.createElement('button');
+  btnTheme.textContent = '🌓 Cambia Tema';
+  btnTheme.style.position = 'fixed';
+  btnTheme.style.bottom = '10px';
+  btnTheme.style.right = '10px';
+  btnTheme.style.padding = '10px';
+  btnTheme.style.borderRadius = '8px';
+  btnTheme.onclick = () => {
+    document.body.classList.toggle('dark-mode');
+    localStorage.setItem('theme', document.body.classList.contains('dark-mode') ? 'dark' : 'light');
+  };
+  document.body.appendChild(btnTheme);
+
+  // Bottone installazione PWA
+  const btnInstall = document.createElement('button');
+  btnInstall.id = 'installBtn';
+  btnInstall.textContent = '📲 Installa App';
+  btnInstall.style.position = 'fixed';
+  btnInstall.style.bottom = '60px';
+  btnInstall.style.right = '10px';
+  btnInstall.style.padding = '10px';
+  btnInstall.style.borderRadius = '8px';
+  btnInstall.style.display = 'none';
+  document.body.appendChild(btnInstall);
+
+  btnInstall.addEventListener('click', () => {
+    if (deferredPrompt) {
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(choiceResult => {
+        if (choiceResult.outcome === 'accepted') {
+          console.log('Utente ha accettato l’installazione');
+        } else {
+          console.log('Utente ha rifiutato l’installazione');
+        }
+        deferredPrompt = null;
+        btnInstall.style.display = 'none';
+      });
+    }
+  });
 
   calc(); // calcolo iniziale
 });
@@ -64,7 +89,7 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// Rende il calcolo automatico
+// Calcolo automatico
 document.addEventListener('input', () => {
   document.querySelectorAll('input').forEach(input => {
     localStorage.setItem(input.id, input.value);
@@ -88,3 +113,10 @@ function calc() {
     document.getElementById('ultimaData')?.innerText = 'Ultimo calcolo: ' + localStorage.getItem('ultimaModifica');
   }
 }
+
+// Intercetta evento installazione PWA
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBtn').style.display = 'block';
+});
