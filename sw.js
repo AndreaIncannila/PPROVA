@@ -1,19 +1,35 @@
-const cacheName = 'guida-pergola-v1';
-const assets = [
-  './',
-  './index.html',
-  './icon.png',
-  './manifest.json'
+
+const CACHE_NAME = 'guida-pergola-cache-v1';
+const FILES_TO_CACHE = [
+  '/',
+  '/index.html',
+  '/style.css',
+  '/icon.png',
+  '/manifest.json'
 ];
 
+// Install
 self.addEventListener('install', event => {
   event.waitUntil(
-    caches.open(cacheName).then(cache => {
-      return cache.addAll(assets);
-    })
+    caches.open(CACHE_NAME)
+      .then(cache => cache.addAll(FILES_TO_CACHE))
   );
+  self.skipWaiting();
 });
 
+// Activate
+self.addEventListener('activate', event => {
+  event.waitUntil(
+    caches.keys().then(keyList => {
+      return Promise.all(keyList.map(key => {
+        if (key !== CACHE_NAME) return caches.delete(key);
+      }));
+    })
+  );
+  self.clients.claim();
+});
+
+// Fetch
 self.addEventListener('fetch', event => {
   event.respondWith(
     caches.match(event.request).then(response => {
