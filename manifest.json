@@ -1,7 +1,7 @@
 {
     "name": "Calcolo Guida Pergola",
     "short_name": "GuidaPergola",
-    "start_url": "index.html",
+    "start_url": "./",
     "display": "standalone",
     "background_color": "#f5f5f5",
     "theme_color": "#4CAF50",
@@ -9,6 +9,11 @@
         {
             "src": "icon.png",
             "sizes": "128x128",
+            "type": "image/png"
+        },
+        {
+            "src": "icon-192.png",
+            "sizes": "192x192",
             "type": "image/png"
         }
     ]
