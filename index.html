@@ -92,6 +92,32 @@ document.getElementById("calcolaBtn").addEventListener("click", function() {
     }
 });
 </script>
+
+<script>
+function calcolaGuida() {
+    const posteriore = parseFloat(document.getElementById("input1").value);
+    const anteriore = parseFloat(document.getElementById("input2").value);
+    const sporgenza = parseFloat(document.getElementById("input3").value);
+
+    if (isNaN(posteriore) || isNaN(anteriore) || isNaN(sporgenza)) {
+        alert("Inserisci tutti i valori numerici.");
+        return;
+    }
+
+    const delta = posteriore - anteriore;
+    const profondita = Math.sqrt(delta * delta + sporgenza * sporgenza).toFixed(2);
+
+    document.getElementById("risultato").innerText = `Profondità guida: ${profondita} cm`;
+
+    const now = new Date().toLocaleString("it-IT");
+    document.getElementById("ultimoCalcolo").innerText = `Ultimo calcolo: ${now}`;
+
+    // Salva nei localStorage (facoltativo)
+    localStorage.setItem("ultimoCalcolo", now);
+    localStorage.setItem("profonditaGuida", profondita);
+}
+</script>
+
 </body>
 
 </html>
