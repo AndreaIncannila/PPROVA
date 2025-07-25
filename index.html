@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="manifest" href="manifest.json" />
+  <title>Guida Pergola</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      text-align: center;
+    }
+    input {
+      margin: 10px;
+      padding: 8px;
+      width: 200px;
+      font-size: 16px;
+    }
+    #risultato, #ultimaData {
+      margin-top: 20px;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <img src="icon.png" alt="Logo" style="width: 128px; height: 128px;" />
+  <h1>GUIDA PERGOLA</h1>
+
+  <div>
+    <input type="number" id="altezzaPosteriore" placeholder="Altezza posteriore (cm)" />
+    <input type="number" id="altezzaAnteriore" placeholder="Altezza anteriore (cm)" />
+    <input type="number" id="sporgenza" placeholder="Sporgenza (cm)" />
+  </div>
+
+  <div id="risultato">Profondità guida: -- cm</div>
+  <div id="ultimaData">Ultimo calcolo: --</div>
+
+  <script src="script.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('sw.js').then(registration => {
+          console.log('ServiceWorker registrato con scope:', registration.scope);
+        }).catch(error => {
+          console.log('ServiceWorker registration failed:', error);
+        });
+      });
+    }
+  </script>
+</body>
+</html>
